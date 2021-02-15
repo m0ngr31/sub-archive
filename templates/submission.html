@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <div class="row">
+    <h1>{{ title }}</h1>
+  </div>
+  <div class="row">
+    <table>
+      <thead>
+        <tr>
+          <th>Comments</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for comment in comments %}
+          <tr>
+            <td>
+              {{ comment.body }}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

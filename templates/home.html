@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <div class="row">
+    <h1>Welcome to The Archive</h1>
+  </div>
+  <div class="row">
+    <h4>Archived communities on this server</h4>
+  </div>
+  <div class="row">
+    <table>
+      <thead>
+        <tr>
+          <th>Subreddit</th>
+          <th>Submissions</th>
+          <th>Comments</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for subreddit in subreddits %}
+          <tr>
+            <td>
+              <a href="/r/{{ subreddit.name }}">{{ subreddit.name }}</a>
+            </td>
+            <td>
+              {{ subreddit.submissions }}
+            </td>
+            <td>
+              {{ subreddit.comments }}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

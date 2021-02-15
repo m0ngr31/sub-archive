@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <div class="row">
+    <h1>{{ subreddit }}</h1>
+  </div>
+  <div class="row">
+    <table>
+      <thead>
+        <tr>
+          <th>Submission</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for submission in submissions %}
+          <tr>
+            <td>
+              <a href="/r/{{ subreddit }}/{{ submission.idstr }}">{{ submission.title }}</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
