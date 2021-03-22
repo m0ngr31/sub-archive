@@ -1,25 +1,62 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  <div class="row">
-    <h1>{{ subreddit }}</h1>
+  {% include 'subreddit_header.html' %}
+
+  <div class="row" style="background-color: black; color: white; padding: 0 0 0 3em">
+    <a href="/r/{{ subreddit }}?sort=top">
+      <h6 style="padding-bottom: 0.5em; margin-bottom: 0" id="top">TOP</h6>
+    </a>
+    <span style="width: 1em"></span>
+    <a href="/r/{{ subreddit }}?sort=new">
+      <h6 style="padding-bottom: 0.5em; margin-bottom: 0" id="new">NEW</h6>
+    </a>
   </div>
-  <div class="row">
-    <table>
-      <thead>
-        <tr>
-          <th>Submission</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for submission in submissions %}
-          <tr>
-            <td>
-              <a href="/r/{{ subreddit }}/{{ submission.idstr }}">{{ submission.title }}</a>
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <div class="" style="padding: 1em 1.5em; background-color: #eee;">
+    <div class="row" style="background-color: white; padding: .5em 1em">
+      <table>
+        <tbody>
+          {% for submission in submissions %}
+            <tr>
+              <td>
+                <div class="row" style="display: block">
+                  <h4 style="margin-bottom: 0"><a href="/r/{{ subreddit }}/{{ submission.idstr }}">{{ submission.title }}</a></h4>
+                </div>
+                <div class="row" style="display: block">
+                  <h6 style="margin-bottom: 0">Submitted by {{ submission.author }}</h6>
+                </div>
+                <div class="row" style="display: block">
+                  <h6 style="margin-bottom: 0">{{ submission.num_comments }} comments &#8226; {{ submission.score }} points</h6>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="row" style="background-color: white; padding: .5em 1em">
+      {% if page_info.has_prev %}
+        <a href="/r/{{ subreddit }}?sort={{ page_info.sort }}&start={{ page_info.prev_page }}">prev</a>
+      {% endif %}
+      {% if page_info.has_prev and page_info.has_more %}
+        <span style="width: .25em"></span>
+        |
+        <span style="width: .25em"></span>
+      {% endif %}
+      {% if page_info.has_more %}
+        <a href="/r/{{ subreddit }}?sort={{ page_info.sort }}&start={{ page_info.next_page }}">more</a>
+      {% endif %}
+    </div>
   </div>
+
+  <script>
+    var topRe = /sort=top$/;
+    var newRe = /sort=new$/;
+
+    if (topRe.test(window.location.search)) {
+      document.getElementById('top').style.borderBottom = '4px solid white';
+    } else {
+      document.getElementById('new').style.borderBottom = '4px solid white';
+    }
+  </script>
 {% endblock %}

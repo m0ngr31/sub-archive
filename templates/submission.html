@@ -1,25 +1,43 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  <div class="row">
-    <h1>{{ title }}</h1>
-  </div>
-  <div class="row">
-    <table>
-      <thead>
-        <tr>
-          <th>Comments</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for comment in comments %}
-          <tr>
-            <td>
-              {{ comment.body }}
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  {% include 'subreddit_header.html' %}
+
+  <div class="" style="padding: 1em 1.5em; background-color: #eee; height: 100%;">
+    <div class="row" style="background-color: white; padding: .5em 1em">
+      {% if submission.url %}
+        <h4 style="margin: auto 0.5em auto 0; width: 18px;"><i class="fas fa-link"></i></h4>
+        <a href="{{ submission.url }}"><h1 style="margin-bottom: 0">{{ title }}</h1></a>
+      {% else %}
+        <h4 style="margin: auto 0.5em auto 0; width: 18px;"><i class="far fa-comment-alt"></i></i></h4>
+        <h1 style="margin-bottom: 0">{{ title }}</h1>
+      {% endif %}
+    </div>
+    <div class="row" style="background-color: white; padding: 0 3em">
+      <h6 style="margin: 0">Submitted by {{ submission.author }}</h6>
+    </div>
+    {% if submission.selftext %}
+      <div class="row" style="background-color: white; padding: 1em; border-top: 1px solid #eee">
+        <h6>{{ submission.selftext }}</h6>
+      </div>
+    {% endif %}
+    <div class="row" style="background-color: white; padding: .5em 1em">
+      {{ submission.num_comments }} comments &#8226; {{ submission.score }} points
+    </div>
+    {% if comments %}
+      {% for comment in comments recursive %}
+        <div class="row" style="background-color: white; padding: .5em 1em; margin-top: 1em; display: block; width: 100%">
+          <div class="row" style="display: block; width: calc(100% - {{ loop.depth0 }} * 10px);">
+            {{ comment.author }} &#8226; {{ comment.score }} points
+          </div>
+          <div class="row" style="display: block">
+            {{ comment.body }}
+          </div>
+          {% if comment.children %}
+            {{ loop(comment.children) }}
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% endif %}
   </div>
 {% endblock %}

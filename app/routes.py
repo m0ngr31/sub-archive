@@ -29,7 +29,7 @@ def home():
 
     subreddits.append(subreddit)
 
-  return render_template('home.html', title="Home", description="EYY LMAO", subreddits=subreddits)
+  return render_template('home.html', title="The Archive", description="The Archive", subreddits=subreddits)
 
 
 @app.route('/r/<subreddit_name>', methods=['GET'])
@@ -54,11 +54,22 @@ def subreddit_home(subreddit_name):
   else:
     sort = Submissions.score
 
-  submissions = Submissions.query.filter_by(subreddit=subreddit_name).order_by(desc(sort)).offset(start_arg).limit(50).all()
+  submissions = Submissions.query.filter_by(subreddit=subreddit_name).order_by(desc(sort)).offset(start_arg * 50).limit(50).all()
 
   if len(submissions) > 0:
-    subreddit = submissions[0].subreddit
-    return render_template('subreddit_home.html', title=subreddit, description=subreddit, submissions=submissions, subreddit=subreddit)
+    # Get the total count of submissions to check for pagination stuff
+    submissions_q = db.session.query(Submissions).filter_by(subreddit=subreddit_name)
+    total_submissions = get_count(submissions_q)
+
+    page_info = {
+      "has_more": (total_submissions / 50) > (start_arg + 1),
+      "has_prev": start_arg > 0,
+      "next_page": start_arg + 1,
+      "prev_page": (start_arg - 1) if (start_arg > 1) else 0,
+      "sort": sort_arg
+    }
+
+    return render_template('subreddit_home.html', title=subreddit_name, page_info=page_info, description=subreddit_name, submissions=submissions, subreddit=subreddit_name)
   else:
     # Make 404 page
     abort(404)
@@ -91,11 +102,11 @@ def submission(subreddit_name, submission_id):
         comments[parent_comment_index]['children'].append(comment)
 
   # Only have parent comments at the top level
-  comments = (c for c in comments if c.get('parent') != submission_id)
+  comments = [c for c in comments if c.get('parent') == submission_id]
 
-  return render_template('submission.html', title=submission.title, description=submission.title, comments=comments, submission=submission)
+  return render_template('submission.html', subreddit=subreddit_name, title=submission.title, description=submission.title, comments=comments, submission=submission)
 
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html', title="Uh-oh :'(", description="404 Not Found"), 404
+  return render_template('404.html', title="Uh-oh :'(", description="404 Not Found"), 404
