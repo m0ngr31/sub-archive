@@ -39,6 +39,6 @@ The simpliest way to get this working is by using Docker and mapping the `/app/d
 * Create favicon
 * Show dates on comments/submissions
 * Enable search functionality
-* Add to DockerHub
+* ~~Add to DockerHub~~
 * Nicer styling for subreddits/comments
 * Have user profile pages

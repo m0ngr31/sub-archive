@@ -5,6 +5,8 @@ WORKDIR /app
 
 COPY . .
 
+RUN apk add build-base libffi-dev
+
 RUN \
   cd /app && \
   pip install gunicorn && \
